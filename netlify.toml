@@ -1,0 +1,13 @@
+[build]
+  # Just publish the root directory with our HTML file
+  publish = "."
+  
+  # No build command needed for static HTML
+  command = "echo 'No build needed'"
+
+[[redirects]]
+  # Redirect the old index.html to index_mega.html if needed
+  from = "/index.html"
+  to = "/index_mega.html"
+  status = 200
+  force = false
