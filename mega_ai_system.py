@@ -302,7 +302,7 @@ Your query '{query}' has been processed through:
         elif any(term in query_lower for term in ["transformer", "attention", "moe"]):
             return self._transformers_response()
         else:
-            return self._general_academic_response()
+            return self._general_response(query)
     
     def _hybrid_response(self, query: str, consciousness: float, quantum: Dict) -> str:
         """Hybrid mode combining both personalities"""
