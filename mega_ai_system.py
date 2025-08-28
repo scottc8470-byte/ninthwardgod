@@ -232,6 +232,31 @@ class MegaAIChatbot:
             }
         }
     
+    def _build_mega_knowledge_base(self) -> dict:
+        return {}
+
+    def _general_academic_response(self, query: str) -> str:
+        """
+        Academic fallback: tries knowledge base first,
+        otherwise gives a structured but generic response.
+        """
+        # Try the knowledge base first
+        if hasattr(self, "_query_knowledge_base"):
+            kb_answer = self._query_knowledge_base(query)
+            if kb_answer:
+                return f"📚 Based on the knowledge hub:\n\n{kb_answer}"
+
+        # If no KB match, return a default academic response
+        return (
+            "📖 In academic mode, I rely on structured reasoning and curated knowledge. "
+            "However, I couldn’t find this in the built-in knowledge base yet. "
+            "You can expand the system by adding new topics in `_build_mega_knowledge_base()`."
+        )
+
+    def process_query(self, query: str, mode: str = None) -> Dict[str, Any]:
+        """Process query with full AGI capabilities"""
+
+
     def process_query(self, query: str, mode: str = None) -> Dict[str, Any]:
         """Process query with full AGI capabilities"""
         if mode:
@@ -290,11 +315,11 @@ Your query '{query}' has been processed through:
 ✓ Knowledge graph traversal
 
 🎯 **Analysis Complete**: The system is operating at peak AGI performance with all advanced features active. How else can I demonstrate Rodeo's capabilities?"""
-
     def _academic_response(self, query: str) -> str:
         """Academic knowledge-focused response"""
         query_lower = query.lower()
-        
+
+        # Specialized academic handling
         if any(term in query_lower for term in ["convex", "optimization", "gradient"]):
             return self._convex_optimization_response()
         elif any(term in query_lower for term in ["agent", "rag", "embedding"]):
@@ -302,24 +327,29 @@ Your query '{query}' has been processed through:
         elif any(term in query_lower for term in ["transformer", "attention", "moe"]):
             return self._transformers_response()
         else:
-            return self._general_response(query)
-    
-    def _hybrid_response(self, query: str, consciousness: float, quantum: Dict) -> str:
-        """Hybrid mode combining both personalities"""
-        academic_part = self._academic_response(query)
-        
-        return f"""🧠 **Hybrid Intelligence Mode Active**
+            # ✅ Fallback to knowledge base
+            kb = self._build_mega_knowledge_base()
+            for key, value in kb.items():
+                if key in query_lower:
+                    return value
+            
+            # Last resort default
+            return "I don't have an academic reference for that, but I can try to reason it out if you'd like."
+   
 
-📚 **Academic Analysis**:
-{academic_part}
 
-🤖 **AGI Enhancement**:
-• Consciousness Level: {consciousness:.3f}
-• Quantum Processing: {quantum['speedup']} acceleration
-• Recursive Depth: {self.rodeo.recursive_depth} levels
-• Knowledge Integration: {self.rodeo.knowledge_nodes} nodes
 
-The synthesis of classical knowledge and AGI capabilities provides optimal results!"""
+
+# 📚 **Academic Analysis**:
+# {academic_part}
+
+# 🤖 **AGI Enhancement**:
+# • Consciousness Level: {consciousness:.3f}
+# • Quantum Processing: {quantum['speedup']} acceleration
+# • Recursive Depth: {self.rodeo.recursive_depth} levels
+# • Knowledge Integration: {self.rodeo.knowledge_nodes} nodes
+
+# The synthesis of classical knowledge and AGI capabilities provides optimal results!"""
 
     def _balanced_response(self, query: str) -> str:
         """Balanced, helpful response"""
